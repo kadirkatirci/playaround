@@ -34,15 +34,15 @@ function createTable(xmlData) {
         const row = document.createElement('tr');
 
         const titleCell = document.createElement('td');
-        titleCell.textContent = item.querySelector('title').textContent;
+        titleCell.textContent = item.querySelector('dc:type').textContent;
         row.appendChild(titleCell);
 
         const descriptionCell = document.createElement('td');
-        descriptionCell.textContent = item.querySelector('description').textContent;
+        descriptionCell.textContent = item.querySelector('dc:format').textContent;
         row.appendChild(descriptionCell);
 
         const dateCell = document.createElement('td');
-        dateCell.textContent = item.querySelector('date').textContent;
+        dateCell.textContent = item.querySelector('dc:language').textContent;
         row.appendChild(dateCell);
 
         table.appendChild(row);
