@@ -1,6 +1,6 @@
 //   using async and await to fetch xml data.
 let get_data = async () => {
-    let url = "test.xml"; // the XML file.
+    let url = "https://acikerisim.erbakan.edu.tr/oai/request?verb=ListRecords&resumptionToken=oai_dc////100"; // the XML file.
 
     let response = await fetch(url);
     const xmlData = await response
@@ -13,17 +13,16 @@ let get_data = async () => {
 }
 
 let createTable = (xml) => {
-
-    // the xml tag name
-    let ucBooks = xml.getElementsByTagName('List');
-
     
+    // the xml tag name
+    let ucBooks = xml.getElementsByTagName("oai_dc:dc");
+
     let arr = [];
 
     for (let i = 0; i < ucBooks.length; i++) {
         // Push XML attributes into the array.
         arr.push(
-            {Code: ucBooks[i].getElementsByTagName('code'), Name: ucBooks[i].getElementsByTagName('BookName'), Category: ucBooks[i].getElementsByTagName('Category'), Price: ucBooks[i].getElementsByTagName('Price')}
+            {Code: ucBooks[i].getElementsByTagName("dc:title"), Name: ucBooks[i].getElementsByTagName("dc:creator"), Category: ucBooks[i].getElementsByTagName("dc:format"), Price: ucBooks[i].getElementsByTagName("dc:type")}
         );
     }
 
@@ -35,7 +34,7 @@ let createTable = (xml) => {
             }
         }
     }
-
+    
     // Create a table.
     const table = document.createElement("table");
 
@@ -49,20 +48,27 @@ let createTable = (xml) => {
     }
 
     // add data to the table as rows.
-    for (let i = 0; i < arr.length; i++) {
+    setTimeout(function () {
 
-        tr = table.insertRow(-1);
+        for (let i = 0; i < arr.length; i++) {
 
-        for (let j = 0; j < col.length; j++) {
-            let tabCell = tr.insertCell(-1);
-            tabCell.innerHTML = arr[i][col[j]][0]
-                .childNodes[0]
-                .nodeValue;
+            tr = table.insertRow(-1);
+
+            for (let j = 0; j < col.length; j++) {
+                let tabCell = tr.insertCell(-1);
+                tabCell.innerHTML = arr[i][col[j]][0]
+                    .childNodes[0]
+                    .nodeValue;
+            }
         }
-    }
+    }, 0);
 
     // Now, add the newly created table to a container.
     const result = document.getElementById('showData');
     result.innerHTML = "";
     result.appendChild(table);
+    console.log(arr);
+
 }
+
+get_data();
