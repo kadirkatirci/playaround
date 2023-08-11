@@ -37,7 +37,7 @@ function xmlToJson(xml) {
 };
 
 // Usage
-let url = "test.xml";
+let url = "http://127.0.0.1:3000/js_xml-api-json/test.xml";
 fetch(url)
     .then(response => response.text())
     .then(xmlStr => {

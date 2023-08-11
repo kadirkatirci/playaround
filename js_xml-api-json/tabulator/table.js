@@ -1,47 +1,60 @@
-//define data
-//   using async and await to fetch xml data.
-let get_data = async () => {
-    let url = "http://127.0.0.1:3000/js_xml-api-json/test.xml"; // the XML file.
+function xmlToJson(xml) {
 
-    let response = await fetch(url);
-    const xmlData = await response
-        .text()
-        .then((str) => {
-            return new DOMParser().parseFromString(str, 'application/xml');
-        });
+    // Create the return object
+    var obj = {};
 
-    createTable(xmlData); // convert data to table.
-}
-
-let createTable = (xml) => {
-    
-    // the xml tag name
-    let ucBooks = xml.getElementsByTagName("oai_dc:dc");
-
-    let arr = [];
-
-    for (let i = 0; i < ucBooks.length; i++) {
-        // Push XML attributes into the array.
-        arr.push(
-            {Code: ucBooks[i].getElementsByTagName("dc:title"), Name: ucBooks[i].getElementsByTagName("dc:creator"), Category: ucBooks[i].getElementsByTagName("dc:type"), Price: ucBooks[i].getElementsByTagName("dc:language")}
-        );
+    if (xml.nodeType == 1) { // element
+        // do attributes
+        if (xml.attributes.length > 0) {
+            obj["@attributes"] = {};
+            for (var j = 0; j < xml.attributes.length; j++) {
+                var attribute = xml
+                    .attributes
+                    .item(j);
+                obj["@attributes"][attribute.nodeName] = attribute.nodeValue;
+            }
+        }
+    } else if (xml.nodeType == 3) { // text
+        obj = xml.nodeValue;
     }
 
-    let col = [];
-    for (let i = 0; i < arr.length; i++) {
-        for (let key in arr[i]) {
-            if (col.indexOf(key) === -1) {
-                col.push(key);
+    // do children
+    if (xml.hasChildNodes()) {
+        for (var i = 0; i < xml.childNodes.length; i++) {
+            var item = xml
+                .childNodes
+                .item(i);
+            var nodeName = item.nodeName;
+            if (typeof(obj[nodeName]) == "undefined") {
+                obj[nodeName] = xmlToJson(item);
+            } else {
+                if (typeof(obj[nodeName].push) == "undefined") {
+                    var old = obj[nodeName];
+                    obj[nodeName] = [];
+                    obj[nodeName].push(old);
+                }
+                obj[nodeName].push(xmlToJson(item));
             }
         }
     }
-    console.log(arr);
+    return obj;
+
+};
+function abc(jsonData) {
+let url = "http://127.0.0.1:3000/js_xml-api-json/test.xml";
+fetch(url)
+    .then(response => response.text())
+    .then(xmlStr => {
+        const parser = new DOMParser();
+        const xmlData = parser.parseFromString(xmlStr, 'application/xml');
+        const jsonData = xmlToJson(xmlData);
+        console.log(jsonData);
+    })
+    .catch(error => console.error('Error:', error));
 //define table
 var table = new Tabulator("#example-table", {
-    data:arr,
-    autoColumns:true,
+    data: jsonData,
+    autoColumns: true
 });
 }
-
-
-get_data();
+abc();
