@@ -1,7 +1,7 @@
 //   using async and await to fetch xml data.
 let get_data = async () => {
     let url = "https://acikerisim.erbakan.edu.tr/oai/request?verb=ListRecords&resumptionToken" +
-            "=oai_dc////400"; // the XML file.
+            "=oai_dc////100"; // the XML file.
 
     let response = await fetch(url);
     const xmlData = await response
