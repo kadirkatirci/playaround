@@ -40,6 +40,12 @@ $(document).ready(function () {
             }, {
                 data: 'metadata.dc.relation'
             }
+        ],
+        columnDefs: [
+            {
+                "defaultContent": "-",
+                "targets": "_all"
+            }
         ]
     });
 });

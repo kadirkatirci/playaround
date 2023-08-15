@@ -40,20 +40,21 @@ function xmlToJson(xml) {
     return obj;
 
 };
-function abc(jsonData) {
-let url = "http://127.0.0.1:3000/js_xml-api-json/test.xml";
+function abc(newData) {
+let url = "http://127.0.0.1:3000/js_xml-api-json/basic/test.xml";
 fetch(url)
     .then(response => response.text())
     .then(xmlStr => {
         const parser = new DOMParser();
         const xmlData = parser.parseFromString(xmlStr, 'application/xml');
         const jsonData = xmlToJson(xmlData);
-        console.log(jsonData);
+        newData = jsonData['OAI-PMH']['ListRecords'];
+        console.log(newData);
     })
     .catch(error => console.error('Error:', error));
 //define table
 var table = new Tabulator("#example-table", {
-    data: jsonData,
+    data: newData.record,
     autoColumns: true
 });
 }
