@@ -9,15 +9,14 @@ const get_data = async () => {
         const response = await fetch(url);
         const xmlData = await response.text();
 
-        const parser = new XMLParser({
-            ignoreAttributes: false,
-            removeNSPrefix: true,
-            trimValues: true,
-            parseTagValue: true
-        });
+        const parser = new XMLParser(
+            {ignoreAttributes: false, removeNSPrefix: true, trimValues: true, parseTagValue: true}
+        );
         const jsonObj = parser.parse(xmlData);
 
-        const resumptionTokenInfo = jsonObj['OAI-PMH']?.ListRecords?.resumptionToken;
+        const resumptionTokenInfo = jsonObj['OAI-PMH']
+            ?.ListRecords
+                ?.resumptionToken;
         if (!resumptionTokenInfo) {
             break; // Exit the loop if resumptionTokenInfo is undefined
         }
@@ -42,13 +41,29 @@ const initializeDataTable = (data) => {
         $('#example').DataTable({
             data: data,
             columns: [
-                { data: 'dc.type' },
-                { data: 'dc.title' },
-                { data: 'dc.creator' },
-                { data: 'dc.subject' },
-                { data: 'dc.contributor' },
-                { data: 'dc.relation' }
-            ]
+                {
+                    data: 'dc.type'
+                }, {
+                    data: 'dc.title'
+                }, {
+                    data: 'dc.creator'
+                }, {
+                    data: 'dc.subject'
+                }, {
+                    data: 'dc.contributor'
+                }, {
+                    data: 'dc.relation'
+                }
+            ],
+            columnDefs: [
+                {
+                    "defaultContent": "-",
+                    "targets": "_all"
+                }
+            ],
+            deferRender: true,
+            paging: true, // Enable pagination
+            pageLength: 10 // Number of records per page
         });
     });
 };
